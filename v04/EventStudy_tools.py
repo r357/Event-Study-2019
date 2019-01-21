@@ -3,6 +3,7 @@ import pandas as pd
 from pandas import DataFrame
 from scipy.stats import linregress
 
+
 # get_indexer_for ... gets index numbers if condition is met
 
 
@@ -57,9 +58,10 @@ def Excel2 (path, filename, sheets, columns_list, skiprows=1, header=None):
     print(df.head(), "\n")
     return(df)
 
-def Excel3 (path, filename, sheet, column_names):
+def Excel3 (path, filename, sheet, column_names, cols_to_del):
     xl = pd.ExcelFile(path+filename)
     df = xl.parse(sheet, header=None, names=column_names)
+    df.drop(df.columns[cols_to_del] , axis=1, inplace=True)
     return(df)
 
 
@@ -102,5 +104,32 @@ def AbnormalReturns (CAPM_results, event_window, assets, benchmark):
     return(abnormal_returns)
     
     
+    
+
+def graph(asset, day_list, caar, days, benchmark="benchmark", beat=1, beat_miss_colors=1, zero_line=1):
+    import matplotlib.pyplot as plt
+    
+    fig1 = plt.figure(); ax1=fig1.add_subplot(1,1,1)
+
+    if beat == 1:
+        ax1.set_title(asset + " vs " +benchmark+ " when beat")
+        ax1.plot(day_list, caar, color='blue', label='$CAAR$')
+        if zero_line == 1:
+            plt.hlines(0, -days, days, color="black", linestyle="dashed")
+    else:
+        ax1.set_title(asset + " vs " +benchmark+ " when miss")
+        if beat_miss_colors == 1:
+            color_miss = "red"
+        else:
+            color_miss = "blue"
+        ax1.plot(day_list, caar, color=color_miss, label='$CAAR$')            
+        if zero_line:
+            plt.hlines(0, -days, days, color="black", linestyle="dashed")
+    
+    ax1.legend(loc='best')
+    ax1.set_xlabel('Time Horizon')
+    ax1.set_ylabel("CAAR")
+    # plt.yticks(np.arange(-0.001,0.001,0.0001))
+    plt.figure();
     
     
