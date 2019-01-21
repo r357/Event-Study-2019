@@ -49,6 +49,19 @@ def Excel(f):
     print(data.head())
     return(data)
 
+def Excel2 (path, filename, sheets, columns_list, skiprows=1, header=None):
+    ReadExcel = pd.read_excel(path+filename, sheets, skiprows=skiprows, header=header)
+    df = DataFrame(ReadExcel, columns=columns_list)
+#    df.columns = df.columns.str.strip() 
+    df.dropna(inplace=True)
+    print(df.head(), "\n")
+    return(df)
+
+def Excel3 (path, filename, sheet, column_names):
+    xl = pd.ExcelFile(path+filename)
+    df = xl.parse(sheet, header=None, names=column_names)
+    return(df)
+
 
 
 def CAPM (estimation_window, benchmark, assets):
